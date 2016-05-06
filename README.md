@@ -15,3 +15,6 @@ External Library used:
  - InfiniGAG API
  - Volley
  - ButterKnife
+
+Play Store:
+https://play.google.com/store/apps/details?id=mememe.litegag
