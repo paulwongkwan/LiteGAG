@@ -1,0 +1,48 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+    defaultConfig {
+        applicationId "mememe.litegag"
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+    }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    }
+}
+
+apply plugin: 'com.neenbedankt.android-apt'
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:+'
+    compile 'com.android.support:support-v4:+'
+    compile 'com.astuetz:pagerslidingtabstrip:+'
+    compile 'com.felipecsl:gifimageview:+'
+    compile 'com.android.support:appcompat-v7:+'
+    compile 'com.android.support:recyclerview-v7:+'
+    compile 'com.commit451:PhotoView:+'
+    compile 'com.squareup.picasso:picasso:+'
+    compile 'com.android.volley:volley:+'
+    compile 'com.google.code.gson:gson:+'
+    compile 'com.jakewharton:butterknife:+'
+    apt 'com.jakewharton:butterknife-compiler:+'
+}

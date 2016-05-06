@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+
+    <TextView
+	    android:id="@+id/gagTitle"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:padding="@dimen/gagview_padding"
+	    android:textAppearance="?android:attr/textAppearanceMedium"
+	    android:textColor="@color/MidNightBlue"/>
+
+	<FrameLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center">
+
+		<ProgressBar
+			android:id="@+id/progress"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			android:indeterminate="true"
+				/>
+
+		<ImageView
+			android:id="@+id/gagImage"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_centerInParent="true"
+			android:adjustViewBounds="true"
+			android:scaleType="fitCenter"/>
+	</FrameLayout>
+
+	<TextView
+		android:id="@+id/gagCount"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="@dimen/gagview_padding"
+		android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+    <!--<com.felipecsl.gifimageview.library.GifImageView-->
+            <!--android:id="@+id/gagImage"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:scaleType="fitCenter"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:adjustViewBounds="true"/>-->
+</LinearLayout>

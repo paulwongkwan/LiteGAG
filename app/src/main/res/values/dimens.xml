@@ -1,0 +1,11 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="PagerTabHeight">48dp</dimen>
+    <dimen name="IndicatorHeight">5dp</dimen>
+    <dimen name="gagview_padding">10dp</dimen>
+    <dimen name="horizontal_bar_height">150dp</dimen>
+    <dimen name="gagbox_wordsize">8sp</dimen>
+    <dimen name="gagbox_width">100dp</dimen>
+</resources>
