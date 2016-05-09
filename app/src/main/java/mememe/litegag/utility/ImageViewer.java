@@ -53,6 +53,16 @@ public class ImageViewer {
         webloading = true;
     }
 
+    public static ImageViewer makeViewer(Context c, File f){
+        ImageViewer iv = new ImageViewer(c, f);
+        return iv;
+    }
+
+    public static ImageViewer makeViewer(Context c, String url) {
+        ImageViewer iv = new ImageViewer(c, url);
+        return iv;
+    }
+
     private boolean checkFile() {
         return file != null && file.exists() && file.isFile();
     }

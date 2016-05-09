@@ -114,4 +114,7 @@ public class HomeScreen extends AppCompatActivity {
 		toolbar.setTitleTextColor(Color.WHITE);
 		setSupportActionBar(toolbar);
 	}
+
+	protected void onConfigurationChange(){
+	}
 }

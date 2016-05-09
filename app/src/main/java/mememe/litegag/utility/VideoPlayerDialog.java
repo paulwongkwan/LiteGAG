@@ -28,13 +28,14 @@ public class VideoPlayerDialog {
 	public VideoPlayerDialog(){
     }
 
-    public VideoPlayerDialog(Context c){
-        this.c = c;
-    }
-
     public VideoPlayerDialog(Context c, String url) {
         this.c = c;
         this.url = url;
+    }
+
+    public static VideoPlayerDialog makePlayer(Context c, String url) {
+        VideoPlayerDialog vp = new VideoPlayerDialog(c, url);
+        return vp;
     }
 
     public boolean show(){

@@ -135,9 +135,9 @@ public class GagAdapter extends RecyclerView.Adapter<GagAdapter.GagViewHolder>  
 				gagImage.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View v) {
 						if (gag.media.size() > 0)
-							new VideoPlayerDialog(c, gag.media.get("mp4")).show();
+							VideoPlayerDialog.makePlayer(c, gag.media.get("mp4")).show();
 						else
-							new ImageViewer(c, gag.images.get("normal")).show();
+							ImageViewer.makeViewer(c, gag.images.get("normal")).show();
 					}
 				});
 			}
