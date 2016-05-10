@@ -45,4 +45,6 @@ dependencies {
     compile 'com.google.code.gson:gson:+'
     compile 'com.jakewharton:butterknife:+'
     apt 'com.jakewharton:butterknife-compiler:+'
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.2.0'
 }

@@ -17,6 +17,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import mememe.litegag.adapter.TabAdapter;
+import mememe.litegag.networking.OkHttpStack;
 
 /**
  * 2016-02-17
@@ -34,6 +35,7 @@ import mememe.litegag.adapter.TabAdapter;
  * - InfiniGAG API
  * - Volley
  * - ButterKnife
+ * - OkHttp3
  */
 
 public class HomeScreen extends AppCompatActivity {
@@ -57,7 +59,7 @@ public class HomeScreen extends AppCompatActivity {
 		initActionbar();
 		setTabs();
 
-		mQueue = Volley.newRequestQueue(this);
+		mQueue = Volley.newRequestQueue(this, new OkHttpStack());
 
 		// Initialize the ViewPager and set an adapter
 		tabAdapter = new TabAdapter(getSupportFragmentManager());
