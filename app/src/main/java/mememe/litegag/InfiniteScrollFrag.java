@@ -26,6 +26,11 @@ import butterknife.ButterKnife;
 import mememe.litegag.adapter.GagAdapter;
 import mememe.litegag.listener.InfiniteScrollListener;
 import mememe.litegag.object.GagObject;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * 2016-02-17
@@ -34,6 +39,9 @@ import mememe.litegag.object.GagObject;
  * Include the Swipetorefreshview and
  * Recycleview. Support swipe to refresh
  * and infinite scroll.
+ * <p/>
+ * 2016-12-06
+ * Added RxJava to improve code
  */
 
 public class InfiniteScrollFrag extends Fragment {
@@ -94,7 +102,7 @@ public class InfiniteScrollFrag extends Fragment {
 		position = getArguments().getInt(ARG_POSITION);
 		GAG_LINK = getLink(position);
 
-		parent = (HomeScreen)getActivity();
+		parent = (HomeScreen) getActivity();
 
 		getGagList();
 		gAdapter = new GagAdapter(getActivity(), gaglist);
@@ -126,7 +134,7 @@ public class InfiniteScrollFrag extends Fragment {
 			}
 		});
 
-		refreshView = (SwipeRefreshLayout)container.findViewById(R.id.refreshView);
+		refreshView = (SwipeRefreshLayout) container.findViewById(R.id.refreshView);
 		refreshView.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			public void onRefresh() {
 				gaglist.clear();
@@ -136,13 +144,13 @@ public class InfiniteScrollFrag extends Fragment {
 			}
 		});
 		refreshView.setProgressViewOffset(true, getActivity().getResources().getDimensionPixelOffset(R.dimen.gagbox_width),
-				getActivity().getResources().getDimensionPixelOffset(R.dimen.gagbox_width)*2);
+				getActivity().getResources().getDimensionPixelOffset(R.dimen.gagbox_width) * 2);
 
 		return container;
 	}
 
 	public void getGagList() {
-		if(!updating){
+		if (!updating) {
 			updating = true;
 
 			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(GAG_LINK + next, null,
@@ -150,47 +158,79 @@ public class InfiniteScrollFrag extends Fragment {
 						@Override
 						public void onResponse(JSONObject json) {
 							if (json != null) {
-								try {
-									next = json.getJSONObject("paging").getString("next");
-									JSONArray array = json.getJSONArray("data");
+								Observable.just(json)
+										.flatMap(new Func1<JSONObject, Observable<JSONObject>>() {
 
-									for (int i = 0; i < array.length(); i++) {
-										JSONObject oj = array.getJSONObject(i);
+											@Override
+											public Observable<JSONObject> call(JSONObject jsonObject) {
 
-										GagObject tmp = new GagObject();
-										tmp.id = oj.getString("id");
-										tmp.caption = oj.getString("caption");
-										tmp.link = oj.getString("link");
-										tmp.setImages(oj.getJSONObject("images"));
-										if (!oj.getString("media").equals("false")) {
-											tmp.setMedia(oj.getJSONObject("media"));
-										}
-										tmp.votes = Integer.parseInt(oj.getJSONObject("votes").getString("count"));
-										tmp.comments = Integer.parseInt(oj.getJSONObject("comments").getString("count"));
+												JSONArray array = null;
+												ArrayList<JSONObject> jarray = new ArrayList<>();
+												try {
+													next = jsonObject.getJSONObject("paging").getString("next");
+													array = jsonObject.getJSONArray("data");
 
-										/*
-										*   Search the whole list to find out any double entry
-										*   before insert the gag.
-										*/
-										boolean unfound = true;
-										for (int x = 0; x < gaglist.size(); x++) {
-											GagObject tmpG = gaglist.get(x);
-											if (tmpG.id.equals(tmp.id)) {
-												unfound = false;
-												break;
+													for (int i = 0; i < array.length(); i++) {
+														jarray.add(array.getJSONObject(i));
+													}
+												} catch (JSONException e) {
+													e.printStackTrace();
+												}
+
+												return Observable.from(jarray);
 											}
-										}
-										if (unfound) {
-											gaglist.add(tmp);
-											gAdapter.notifyItemInserted(gaglist.size());
-										}
-									}
+										})
+										.map(new Func1<JSONObject, GagObject>() {
+											@Override
+											public GagObject call(JSONObject oj) {
+												GagObject tmp = new GagObject();
+												try {
+													tmp.id = oj.getString("id");
+													tmp.caption = oj.getString("caption");
+													tmp.link = oj.getString("link");
+													tmp.setImages(oj.getJSONObject("images"));
+													if (!oj.getString("media").equals("false")) {
+														tmp.setMedia(oj.getJSONObject("media"));
+													}
+													tmp.votes = Integer.parseInt(oj.getJSONObject("votes").getString("count"));
+													tmp.comments = Integer.parseInt(oj.getJSONObject("comments").getString("count"));
+												} catch (JSONException e) {
+													e.printStackTrace();
+												}
 
-									if (refreshView != null && refreshView.isRefreshing())
-										refreshView.setRefreshing(false);
-								} catch (JSONException e) {
-									e.printStackTrace();
-								}
+												return tmp;
+											}
+										})
+										.subscribeOn(Schedulers.io())
+										.observeOn(AndroidSchedulers.mainThread())
+										.subscribe(new Subscriber<GagObject>() {
+											@Override
+											public void onCompleted() {
+												if (refreshView != null && refreshView.isRefreshing())
+													refreshView.setRefreshing(false);
+											}
+
+											@Override
+											public void onError(Throwable e) {
+												Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
+											}
+
+											@Override
+											public void onNext(GagObject gagObject) {
+												boolean unfound = true;
+												for (int x = 0; x < gaglist.size(); x++) {
+													GagObject tmpG = gaglist.get(x);
+													if (tmpG.id.equals(gagObject.id)) {
+														unfound = false;
+														break;
+													}
+												}
+												if (unfound) {
+													gaglist.add(gagObject);
+													gAdapter.notifyItemInserted(gaglist.size());
+												}
+											}
+										});
 							} else {
 								//ajax error, show error code
 								Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();

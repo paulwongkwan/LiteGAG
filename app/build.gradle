@@ -7,12 +7,12 @@ android {
         applicationId "mememe.litegag"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -32,7 +32,7 @@ buildscript {
 apply plugin: 'com.neenbedankt.android-apt'
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:+'
     compile 'com.android.support:support-v4:+'
     compile 'com.astuetz:pagerslidingtabstrip:+'
@@ -47,4 +47,5 @@ dependencies {
     apt 'com.jakewharton:butterknife-compiler:+'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'com.squareup.okhttp3:okhttp-urlconnection:3.2.0'
+    compile 'io.reactivex:rxandroid:1.2.0'
 }

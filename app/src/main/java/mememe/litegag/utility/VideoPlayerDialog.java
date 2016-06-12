@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
 import android.widget.MediaController;
 import android.widget.VideoView;
@@ -24,6 +26,8 @@ public class VideoPlayerDialog {
     private String url;
     private VideoView videoView;
 	private ProgressDialog pDialog;
+    private boolean loop = false;
+	private int stopPosition;
 
 	public VideoPlayerDialog(){
     }
@@ -36,6 +40,10 @@ public class VideoPlayerDialog {
     public static VideoPlayerDialog makePlayer(Context c, String url) {
         VideoPlayerDialog vp = new VideoPlayerDialog(c, url);
         return vp;
+    }
+
+    public void setLoop(boolean set){
+        loop = set;
     }
 
     public boolean show(){
@@ -68,8 +76,12 @@ public class VideoPlayerDialog {
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             // Close the progress bar and play the video
             public void onPrepared(MediaPlayer mp) {
-	            pDialog.dismiss();
-                videoView.start();
+                if(loop){
+                    mp.setLooping(true);
+                }else {
+                    pDialog.dismiss();
+                    videoView.start();
+                }
             }
         });
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -78,6 +90,20 @@ public class VideoPlayerDialog {
                 dismiss();
             }
         });
+
+	    videoView.setOnTouchListener(new View.OnTouchListener() {
+		    @Override
+		    public boolean onTouch(View v, MotionEvent event) {
+			    if(videoView.isPlaying()){
+				    stopPosition = videoView.getCurrentPosition();
+				    videoView.pause();
+			    }else {
+				    videoView.seekTo(stopPosition);
+				    videoView.resume();
+			    }
+			    return false;
+		    }
+	    });
 
         return true;
     }
