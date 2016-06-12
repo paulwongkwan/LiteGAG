@@ -15,6 +15,8 @@ External Library used:
  - InfiniGAG API
  - Volley
  - ButterKnife
+ - OKHTTP
+ - RxJava
 
 Play Store:
 https://play.google.com/store/apps/details?id=mememe.litegag
