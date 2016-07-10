@@ -3,6 +3,7 @@
                                     xmlns:app="http://schemas.android.com/apk/res-auto"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    app:cardCornerRadius="10dp"
                                     app:cardUseCompatPadding="true">
 
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -15,9 +16,9 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:padding="@dimen/gagview_padding"
-			android:visibility="gone"
 			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:textColor="@color/MidNightBlue"/>
+			android:textColor="@color/MidNightBlue"
+			android:visibility="gone"/>
 
 		<FrameLayout
 			android:layout_width="match_parent"
@@ -44,20 +45,20 @@
 				android:id="@+id/gagCount"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
+				android:layout_gravity="bottom"
+				android:background="#337f8c8d"
 				android:padding="@dimen/gagview_padding"
 				android:textAppearance="?android:attr/textAppearanceSmall"
-				android:layout_gravity="bottom"
-				android:visibility="gone"
-				android:background="#337f8c8d"
-				android:textColor="#fff"/>
+				android:textColor="#fff"
+				android:visibility="gone"/>
 
 			<ImageView
+				android:id="@+id/gag_gif_ind"
 				android:layout_width="@dimen/play_ind_size"
 				android:layout_height="@dimen/play_ind_size"
-				android:id="@+id/gag_gif_ind"
-				android:src="@drawable/play"
 				android:layout_gravity="center"
 				android:alpha=".5"
+				android:src="@drawable/play"
 				android:visibility="gone"/>
 		</FrameLayout>
 

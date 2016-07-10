@@ -143,6 +143,8 @@ public class InfiniteScrollFrag extends Fragment {
 				gAdapter.notifyDataSetChanged();
 				next = "";
 				getGagList();
+				gAdapter = new GagAdapter(getActivity(), gaglist);
+				gagListView.setAdapter(gAdapter);
 			}
 		});
 		refreshView.setProgressViewOffset(true, getActivity().getResources().getDimensionPixelOffset(R.dimen.gagbox_width),
@@ -163,7 +165,14 @@ public class InfiniteScrollFrag extends Fragment {
 			call.enqueue(new Callback() {
 				@Override
 				public void onFailure(Call call, IOException e) {
-					Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
+					getActivity().runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
+						}
+					});
+
+					updating = false;
 				}
 
 				@Override

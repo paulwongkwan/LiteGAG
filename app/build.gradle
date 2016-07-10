@@ -7,7 +7,7 @@ android {
         applicationId "mememe.litegag"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 5
+        versionCode 6
         versionName "1.5"
     }
     buildTypes {
@@ -50,4 +50,5 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.github.bmelnychuk:atv:1.2.+'
+    compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.0.2'
 }

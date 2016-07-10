@@ -10,11 +10,14 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.jakewharton.picasso.OkHttp3Downloader;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import mememe.litegag.adapter.TabAdapter;
 import mememe.litegag.comment.CommentDialog;
+import mememe.litegag.singleton.networking.HttpClient;
 
 /**
  * 2016-02-17
@@ -52,6 +55,12 @@ public class HomeScreen extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home_screen);
 
+		final Picasso picasso = new Picasso.Builder(this)
+				.downloader(new OkHttp3Downloader(HttpClient.getInstance()))
+				.build();
+
+		Picasso.setSingletonInstance(picasso);
+
 		ButterKnife.bind(this);
 		initActionbar();
 		setTabs();
@@ -62,8 +71,6 @@ public class HomeScreen extends AppCompatActivity {
 
 		// Bind the tabs to the ViewPager
 		tabs.setViewPager(pager);
-
-
 	}
 
 	/*

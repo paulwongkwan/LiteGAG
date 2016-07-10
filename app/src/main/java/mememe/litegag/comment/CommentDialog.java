@@ -116,7 +116,7 @@ public class CommentDialog extends DialogFragment {
 	}
 
 	private void buildTreeView(){
-		if(comments != null && comments.getData().size() > 0){
+		if(comments != null && comments.getData() != null && comments.getData().size() > 0){
 			List<Data> commentslist = comments.getData();
 
 			TreeNode root = buildTreeRelation(TreeNode.root(), commentslist);
@@ -128,6 +128,8 @@ public class CommentDialog extends DialogFragment {
 			comments_container.addView(tView.getView());
 
 			comment_loading_bar.setVisibility(View.GONE);
+		}else{
+			dismiss();
 		}
 	}
 
