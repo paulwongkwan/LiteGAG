@@ -9,15 +9,12 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.astuetz.PagerSlidingTabStrip;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import mememe.litegag.adapter.TabAdapter;
-import mememe.litegag.networking.OkHttpStack;
+import mememe.litegag.comment.CommentDialog;
 
 /**
  * 2016-02-17
@@ -27,15 +24,16 @@ import mememe.litegag.networking.OkHttpStack;
  * Each page is using same fragment class "InfinitScrollFrag"
  * and have refresh and infinit scroll function.
  * All data is fetch from InfiniGAG API.
- *
+ * <p/>
  * External Library used:
  * - PagerSlidingTabStrip
  * - PhotoView
  * - Picasso
  * - InfiniGAG API
- * - Volley
  * - ButterKnife
  * - OkHttp3
+ * - Retrofit 2
+ * - Gson
  */
 
 public class HomeScreen extends AppCompatActivity {
@@ -48,7 +46,6 @@ public class HomeScreen extends AppCompatActivity {
 	Toolbar toolbar;
 	@BindView(R.id.headerbar)
 	LinearLayout headerbar;
-	RequestQueue mQueue;
 	private TabAdapter tabAdapter;
 
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,33 +56,30 @@ public class HomeScreen extends AppCompatActivity {
 		initActionbar();
 		setTabs();
 
-		mQueue = Volley.newRequestQueue(this, new OkHttpStack());
-
 		// Initialize the ViewPager and set an adapter
 		tabAdapter = new TabAdapter(getSupportFragmentManager());
 		pager.setAdapter(tabAdapter);
 
 		// Bind the tabs to the ViewPager
 		tabs.setViewPager(pager);
-	}
 
-	protected void addQueue(Request request) {
-		mQueue.add(request);
+
 	}
 
 	/*
 	 *  Header bar controller
 	 *  For hide and show the header bar
 	 */
-	public void showbar(){
+	public void showbar() {
 		headerbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
 	}
-	public void hidebar(){
+
+	public void hidebar() {
 		headerbar.animate().translationY(-headerbar.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
 	}
 
 	private void setTabs() {
-		if (tabs != null){
+		if (tabs != null) {
 			tabs.setShouldExpand(true);
 			tabs.setDividerColorResource(R.color.MidNightBlue);
 			tabs.setIndicatorColorResource(R.color.Sliver);
@@ -117,6 +111,12 @@ public class HomeScreen extends AppCompatActivity {
 		setSupportActionBar(toolbar);
 	}
 
-	protected void onConfigurationChange(){
+	protected void onConfigurationChange() {
+	}
+
+	public void openComment(String id){
+		CommentDialog commentDialog = CommentDialog.make(id);
+		if(commentDialog != null)
+			commentDialog.show(getFragmentManager(), "Comments");
 	}
 }

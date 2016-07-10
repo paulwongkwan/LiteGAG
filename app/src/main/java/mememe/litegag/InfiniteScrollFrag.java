@@ -10,14 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +23,11 @@ import butterknife.ButterKnife;
 import mememe.litegag.adapter.GagAdapter;
 import mememe.litegag.listener.InfiniteScrollListener;
 import mememe.litegag.object.GagObject;
+import mememe.litegag.singleton.networking.HttpClient;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Request;
+import okhttp3.Response;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -153,100 +155,108 @@ public class InfiniteScrollFrag extends Fragment {
 		if (!updating) {
 			updating = true;
 
-			JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(GAG_LINK + next, null,
-					new Response.Listener<JSONObject>() {
-						@Override
-						public void onResponse(JSONObject json) {
-							if (json != null) {
-								Observable.just(json)
-										.flatMap(new Func1<JSONObject, Observable<JSONObject>>() {
+			Request request = new Request.Builder()
+					.url(GAG_LINK + next)
+					.build();
 
-											@Override
-											public Observable<JSONObject> call(JSONObject jsonObject) {
+			Call call = HttpClient.getInstance().newCall(request);
+			call.enqueue(new Callback() {
+				@Override
+				public void onFailure(Call call, IOException e) {
+					Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
+				}
 
-												JSONArray array = null;
-												ArrayList<JSONObject> jarray = new ArrayList<>();
-												try {
-													next = jsonObject.getJSONObject("paging").getString("next");
-													array = jsonObject.getJSONArray("data");
+				@Override
+				public void onResponse(Call call, Response response) throws IOException {
+					try {
+						JSONObject json = new JSONObject(response.body().string().trim());
 
-													for (int i = 0; i < array.length(); i++) {
-														jarray.add(array.getJSONObject(i));
-													}
-												} catch (JSONException e) {
-													e.printStackTrace();
+						if (json != null) {
+							Observable.just(json)
+									.flatMap(new Func1<JSONObject, Observable<JSONObject>>() {
+
+										@Override
+										public Observable<JSONObject> call(JSONObject jsonObject) {
+
+											JSONArray array = null;
+											ArrayList<JSONObject> jarray = new ArrayList<>();
+											try {
+												next = jsonObject.getJSONObject("paging").getString("next");
+												array = jsonObject.getJSONArray("data");
+
+												for (int i = 0; i < array.length(); i++) {
+													jarray.add(array.getJSONObject(i));
 												}
-
-												return Observable.from(jarray);
+											} catch (JSONException e) {
+												e.printStackTrace();
 											}
-										})
-										.map(new Func1<JSONObject, GagObject>() {
-											@Override
-											public GagObject call(JSONObject oj) {
-												GagObject tmp = new GagObject();
-												try {
-													tmp.id = oj.getString("id");
-													tmp.caption = oj.getString("caption");
-													tmp.link = oj.getString("link");
-													tmp.setImages(oj.getJSONObject("images"));
-													if (!oj.getString("media").equals("false")) {
-														tmp.setMedia(oj.getJSONObject("media"));
-													}
-													tmp.votes = Integer.parseInt(oj.getJSONObject("votes").getString("count"));
-													tmp.comments = Integer.parseInt(oj.getJSONObject("comments").getString("count"));
-												} catch (JSONException e) {
-													e.printStackTrace();
+
+											return Observable.from(jarray);
+										}
+									})
+									.map(new Func1<JSONObject, GagObject>() {
+										@Override
+										public GagObject call(JSONObject oj) {
+											GagObject tmp = new GagObject();
+											try {
+												tmp.id = oj.getString("id");
+												tmp.caption = oj.getString("caption");
+												tmp.link = oj.getString("link");
+												tmp.setImages(oj.getJSONObject("images"));
+												if (!oj.getString("media").equals("false")) {
+													tmp.setMedia(oj.getJSONObject("media"));
 												}
-
-												return tmp;
-											}
-										})
-										.subscribeOn(Schedulers.io())
-										.observeOn(AndroidSchedulers.mainThread())
-										.subscribe(new Subscriber<GagObject>() {
-											@Override
-											public void onCompleted() {
-												if (refreshView != null && refreshView.isRefreshing())
-													refreshView.setRefreshing(false);
+												tmp.votes = Integer.parseInt(oj.getJSONObject("votes").getString("count"));
+												tmp.comments = Integer.parseInt(oj.getJSONObject("comments").getString("count"));
+											} catch (JSONException e) {
+												e.printStackTrace();
 											}
 
-											@Override
-											public void onError(Throwable e) {
-												Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
-											}
+											return tmp;
+										}
+									})
+									.subscribeOn(Schedulers.io())
+									.observeOn(AndroidSchedulers.mainThread())
+									.subscribe(new Subscriber<GagObject>() {
+										@Override
+										public void onCompleted() {
+											if (refreshView != null && refreshView.isRefreshing())
+												refreshView.setRefreshing(false);
+										}
 
-											@Override
-											public void onNext(GagObject gagObject) {
-												boolean unfound = true;
-												for (int x = 0; x < gaglist.size(); x++) {
-													GagObject tmpG = gaglist.get(x);
-													if (tmpG.id.equals(gagObject.id)) {
-														unfound = false;
-														break;
-													}
-												}
-												if (unfound) {
-													gaglist.add(gagObject);
-													gAdapter.notifyItemInserted(gaglist.size());
+										@Override
+										public void onError(Throwable e) {
+											Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
+										}
+
+										@Override
+										public void onNext(GagObject gagObject) {
+											boolean unfound = true;
+											for (int x = 0; x < gaglist.size(); x++) {
+												GagObject tmpG = gaglist.get(x);
+												if (tmpG.id.equals(gagObject.id)) {
+													unfound = false;
+													break;
 												}
 											}
-										});
-							} else {
-								//ajax error, show error code
-								Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
-							}
-
-							updating = false;
-						}
-					},
-					new Response.ErrorListener() {
-						@Override
-						public void onErrorResponse(VolleyError error) {
-							error.printStackTrace();
+											if (unfound) {
+												gaglist.add(gagObject);
+												gAdapter.notifyItemInserted(gaglist.size());
+											}
+										}
+									});
+						} else {
+							//ajax error, show error code
 							Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
 						}
-					});
-			parent.addQueue(jsonObjectRequest);
+					} catch (JSONException e) {
+						e.printStackTrace();
+						Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
+					}
+
+					updating = false;
+				}
+			});
 		}
 	}
 }

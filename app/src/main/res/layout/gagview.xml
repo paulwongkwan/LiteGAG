@@ -1,51 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    app:cardUseCompatPadding="true">
 
-    <TextView
-	    android:id="@+id/gagTitle"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:padding="@dimen/gagview_padding"
-	    android:textAppearance="?android:attr/textAppearanceMedium"
-	    android:textColor="@color/MidNightBlue"/>
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	              android:layout_width="match_parent"
+	              android:layout_height="wrap_content"
+	              android:orientation="vertical">
 
-	<FrameLayout
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_gravity="center">
-
-		<ProgressBar
-			android:id="@+id/progress"
+		<TextView
+			android:id="@+id/gagTitle"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_centerInParent="true"
-			android:indeterminate="true"
+			android:padding="@dimen/gagview_padding"
+			android:visibility="gone"
+			android:textAppearance="?android:attr/textAppearanceMedium"
+			android:textColor="@color/MidNightBlue"/>
+
+		<FrameLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center">
+
+			<ProgressBar
+				android:id="@+id/progress"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_centerInParent="true"
+				android:indeterminate="true"
 				/>
 
-		<ImageView
-			android:id="@+id/gagImage"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_centerInParent="true"
-			android:adjustViewBounds="true"
-			android:scaleType="fitCenter"/>
-	</FrameLayout>
+			<ImageView
+				android:id="@+id/gagImage"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_centerInParent="true"
+				android:adjustViewBounds="true"
+				android:scaleType="fitCenter"/>
 
-	<TextView
-		android:id="@+id/gagCount"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:padding="@dimen/gagview_padding"
-		android:textAppearance="?android:attr/textAppearanceSmall"/>
+			<TextView
+				android:id="@+id/gagCount"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="@dimen/gagview_padding"
+				android:textAppearance="?android:attr/textAppearanceSmall"
+				android:layout_gravity="bottom"
+				android:visibility="gone"
+				android:background="#337f8c8d"
+				android:textColor="#fff"/>
 
-    <!--<com.felipecsl.gifimageview.library.GifImageView-->
-            <!--android:id="@+id/gagImage"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:scaleType="fitCenter"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:adjustViewBounds="true"/>-->
-</LinearLayout>
+			<ImageView
+				android:layout_width="@dimen/play_ind_size"
+				android:layout_height="@dimen/play_ind_size"
+				android:id="@+id/gag_gif_ind"
+				android:src="@drawable/play"
+				android:layout_gravity="center"
+				android:alpha=".5"
+				android:visibility="gone"/>
+		</FrameLayout>
+
+	</LinearLayout>
+
+</android.support.v7.widget.CardView>

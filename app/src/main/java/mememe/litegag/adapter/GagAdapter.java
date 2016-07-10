@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import mememe.litegag.HomeScreen;
 import mememe.litegag.R;
 import mememe.litegag.object.GagObject;
 import mememe.litegag.utility.ImageViewer;
@@ -107,6 +110,12 @@ public class GagAdapter extends RecyclerView.Adapter<GagAdapter.GagViewHolder>  
 		@Nullable
 		@BindView(R.id.gagCount)
 		TextView gagCount;
+		@Nullable
+		@BindView(R.id.progress)
+		ProgressBar progress;
+		@Nullable
+		@BindView(R.id.gag_gif_ind)
+		ImageView gag_gif_ind;
 
 		private Context c;
 		private GagObject gag;
@@ -123,21 +132,43 @@ public class GagAdapter extends RecyclerView.Adapter<GagAdapter.GagViewHolder>  
 			if (g != null) {
 				this.gag = g;
 
-				gagTitle.setText(gag.caption);
-				if (gagCount != null)
-					gagCount.setText(gag.votes + " " + c.getString(R.string.Points) + "  " +
-							gag.comments + " " + c.getString(R.string.Comments));
-
 				Picasso.with(c)
 						.load(gag.images.get("cover"))
-						.into(gagImage);
+						.into(gagImage, new Callback() {
+							@Override
+							public void onSuccess() {
+								gagTitle.setVisibility(View.VISIBLE);
+								gagTitle.setText(gag.caption);
+
+								gagCount.setVisibility(View.VISIBLE);
+								gagCount.setText(gag.votes + " " + c.getString(R.string.Points) + "  " +
+										gag.comments + " " + c.getString(R.string.Comments));
+
+								progress.setVisibility(View.GONE);
+
+								if (gag.media.size() > 0)
+									gag_gif_ind.setVisibility(View.VISIBLE);
+							}
+
+							@Override
+							public void onError() {
+
+							}
+						});
 
 				gagImage.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View v) {
 						if (gag.media.size() > 0)
 							VideoPlayerDialog.makePlayer(c, gag.media.get("mp4")).show();
 						else
-							ImageViewer.makeViewer(c, gag.images.get("normal")).show();
+							ImageViewer.makeViewer(c, gag.images.get("large")).show();
+					}
+				});
+
+				gagCount.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						((HomeScreen)c).openComment(gag.id);
 					}
 				});
 			}

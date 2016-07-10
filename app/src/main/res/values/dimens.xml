@@ -8,4 +8,7 @@
     <dimen name="horizontal_bar_height">150dp</dimen>
     <dimen name="gagbox_wordsize">8sp</dimen>
     <dimen name="gagbox_width">100dp</dimen>
+    <dimen name="comment_profilepic_width">50dp</dimen>
+    <dimen name="comment_expand_size">20dp</dimen>
+    <dimen name="play_ind_size">50dp</dimen>
 </resources>

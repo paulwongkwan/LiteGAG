@@ -7,12 +7,12 @@ android {
         applicationId "mememe.litegag"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 3
-        versionName "1.2"
+        versionCode 5
+        versionName "1.5"
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -33,7 +33,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:+'
+    androidTestCompile 'junit:junit:+'
     compile 'com.android.support:support-v4:+'
     compile 'com.astuetz:pagerslidingtabstrip:+'
     compile 'com.felipecsl:gifimageview:+'
@@ -41,11 +41,13 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:+'
     compile 'com.commit451:PhotoView:+'
     compile 'com.squareup.picasso:picasso:+'
-    compile 'com.android.volley:volley:+'
     compile 'com.google.code.gson:gson:+'
     compile 'com.jakewharton:butterknife:+'
     apt 'com.jakewharton:butterknife-compiler:+'
-    compile 'com.squareup.okhttp3:okhttp:3.2.0'
-    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.2.0'
-    compile 'io.reactivex:rxandroid:1.2.0'
+    compile 'com.squareup.okhttp3:okhttp:+'
+    compile 'io.reactivex:rxandroid:+'
+    compile 'com.android.support:cardview-v7:24.0.0'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.github.bmelnychuk:atv:1.2.+'
 }
